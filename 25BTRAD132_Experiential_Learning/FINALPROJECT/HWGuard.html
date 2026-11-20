@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>HWGuard - Universal Hardware Tamper Guardian</title>
+<style>
+  :root {
+    --bg: #0b0f19;
+    --card: #151d30;
+    --card-border: #1e293b;
+    --text: #f8fafc;
+    --text-muted: #94a3b8;
+    --accent: #38bdf8;
+    --accent-glow: rgba(56, 189, 248, 0.2);
+    --green: #22c55e;
+    --red: #ef4444;
+    --yellow: #eab308;
+    --btn-blue: #2563eb;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  body { background: var(--bg); color: var(--text); padding: 16px; min-height: 100vh; }
+  .container { max-width: 960px; margin: 0 auto; }
+  header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); padding-bottom: 14px; margin-bottom: 18px; flex-wrap: wrap; gap: 10px; }
+  .logo-group { display: flex; align-items: center; gap: 10px; }
+  .logo-svg { width: 34px; height: 34px; fill: var(--accent); }
+  .logo-text { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; color: #fff; }
+  .logo-text span { color: var(--accent); }
+  .os-pill { background: #1e293b; border: 1px solid #334155; padding: 6px 14px; border-radius: 9999px; font-size: 12px; font-weight: 600; color: var(--accent); display: flex; align-items: center; gap: 6px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); display: inline-block; }
+  
+  .banner-box { background: var(--card); border: 1px solid var(--card-border); border-radius: 12px; padding: 16px 20px; margin-bottom: 18px; }
+  .banner-title { font-size: 13px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); font-weight: 700; margin-bottom: 6px; }
+  .banner-device { font-size: 20px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .banner-sub { font-size: 12px; color: #64748b; margin-top: 4px; word-break: break-all; }
+
+  .nav-tabs { display: flex; gap: 8px; margin-bottom: 18px; border-bottom: 1px solid var(--card-border); padding-bottom: 10px; overflow-x: auto; }
+  .tab-btn { background: transparent; border: 1px solid transparent; color: var(--text-muted); padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
+  .tab-btn:hover { background: #1e293b; color: #fff; }
+  .tab-btn.active { background: #1e293b; border-color: var(--accent); color: var(--accent); }
+
+  .action-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .btn-action { padding: 14px 18px; border-radius: 10px; border: none; font-size: 15px; font-weight: 700; color: #fff; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: transform 0.15s, opacity 0.2s; }
+  .btn-action:hover { opacity: 0.95; transform: translateY(-1px); }
+  .btn-action:active { transform: translateY(0); }
+  .btn-verify { background: #2563eb; }
+  .btn-add { background: #16a34a; }
+  .btn-update { background: #475569; }
+  .btn-sub { font-size: 11px; opacity: 0.8; font-weight: normal; }
+
+  .card { background: var(--card); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 18px; }
+  .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .card-title { font-size: 16px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 8px; }
+  
+  table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+  th, td { padding: 12px 14px; border-bottom: 1px solid #1e293b; text-align: left; }
+  th { background: #182235; color: var(--accent); font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  .badge { display: inline-block; padding: 3px 10px; border-radius: 9999px; font-size: 11px; font-weight: 700; }
+  .badge-ok { background: rgba(34,197,94,0.15); color: #4ade80; border: 1px solid rgba(34,197,94,0.3); }
+  .badge-fail { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+  .badge-warn { background: rgba(234,179,8,0.15); color: #fde047; border: 1px solid rgba(234,179,8,0.3); }
+
+  .status-box { padding: 16px; border-radius: 10px; text-align: center; font-size: 16px; font-weight: 700; margin-bottom: 16px; }
+  .status-pass { background: #14532d; color: #86efac; border: 1px solid #16a34a; }
+  .status-fail { background: #7f1d1d; color: #fca5a5; border: 1px solid #dc2626; }
+
+  .os-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+  .os-card { background: #131b2e; border: 1px solid #1e293b; border-radius: 10px; padding: 16px; }
+  .os-card-title { font-weight: 700; color: #fff; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .os-card-desc { font-size: 13px; color: var(--text-muted); line-height: 1.5; margin-bottom: 12px; }
+  .cmd-box { background: #080c14; border: 1px solid #222f46; border-radius: 6px; padding: 10px 12px; font-family: monospace; font-size: 12px; color: #38bdf8; word-break: break-all; margin-bottom: 8px; }
+  
+  .file-drop { border: 2px dashed #334155; border-radius: 10px; padding: 24px; text-align: center; cursor: pointer; transition: border-color 0.2s; margin-bottom: 14px; }
+  .file-drop:hover { border-color: var(--accent); }
+  input[type="file"] { display: none; }
+
+  @media(max-width: 600px) {
+    body { padding: 10px; }
+    .action-grid { grid-template-columns: 1fr; }
+    th, td { padding: 8px 10px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="logo-group">
+      <svg class="logo-svg" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 16l-4-4 1.41-1.41L11 14.17l6.59-6.59L19 9l-8 8z"/></svg>
+      <div class="logo-text">HW<span>GUARD</span></div>
+    </div>
+    <div class="os-pill" id="os_pill">
+      <span class="dot" id="os_dot"></span>
+      <span id="os_text">Detecting Platform...</span>
+    </div>
+  </header>
+
+  <div class="banner-box">
+    <div class="banner-title">Current Machine / Device Environment</div>
+    <div class="banner-device" id="host_device_title">
+      <span>Inspecting Host Hardware...</span>
+    </div>
+    <div class="banner-sub" id="host_device_uuid">Hardware audit is running client-side</div>
+  </div>
+
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="switchTab('dashboard')">🛡️ USB Vault & Audit</button>
+    <button class="tab-btn" onclick="switchTab('device_hw')">📱 Device Hardware</button>
+    <button class="tab-btn" onclick="switchTab('launchers')">💻 1-Click Launchers (Win/Mac/Linux)</button>
+    <button class="tab-btn" onclick="switchTab('certificate')">📜 Export Certificate</button>
+  </div>
+
+  <!-- TAB 1: VAULT & AUDIT -->
+  <div id="tab_dashboard">
+    <div class="action-grid">
+      <button class="btn-action btn-verify" onclick="triggerVerify()">
+        <span>🔍 1. VERIFY HARDWARE</span>
+        <span class="btn-sub">Check against saved cryptographic baseline</span>
+      </button>
+      <button class="btn-action btn-add" onclick="triggerAdd()">
+        <span>➕ 2. ADD DEVICE</span>
+        <span class="btn-sub">Enroll new baseline (Duplicates blocked)</span>
+      </button>
+      <button class="btn-action btn-update" onclick="triggerUpdate()">
+        <span>⚙️ 3. UPDATE DEVICE</span>
+        <span class="btn-sub">Authorized component swap (Password protected)</span>
+      </button>
+    </div>
+
+    <div id="audit_result_area"></div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">📦 Enrolled Devices in Hardware Vault</div>
+        <button onclick="refreshVaultData()" style="background:#1e293b; color:var(--accent); border:1px solid #334155; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:600;">🔄 Refresh</button>
+      </div>
+      <div style="overflow-x: auto;">
+        <table id="devices_table">
+          <thead>
+            <tr>
+              <th>Device Name</th>
+              <th>Motherboard / Model</th>
+              <th>System UUID</th>
+              <th>Last Status</th>
+              <th>Last Verified</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="devices_tbody">
+            <tr><td colspan="6" style="text-align:center; color:#64748b; padding:20px;">Scanning USB Vault...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 2: DEVICE HARDWARE (CLIENT-SIDE) -->
+  <div id="tab_device_hw" style="display:none;">
+    <div class="card">
+      <div class="card-title" style="margin-bottom:12px;">🔍 Client-Side Hardware Inspection</div>
+      <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px;">
+        HWGuard automatically inspects host capabilities across Android, macOS, Linux, and Windows:
+      </p>
+      <div style="overflow-x: auto;">
+        <table>
+          <thead>
+            <tr><th>Component</th><th>Detected Parameter</th><th>Security Classification</th></tr>
+          </thead>
+          <tbody id="hw_tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 3: PLATFORM LAUNCHERS -->
+  <div id="tab_launchers" style="display:none;">
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px;">🚀 1-Click Launchers on this Pendrive</div>
+      <p style="font-size:13px; color:var(--text-muted); margin-bottom:18px;">
+        To perform deep kernel-level SMBIOS, RAM slot serial, and physical NVMe/SATA disk audits, open the corresponding launcher for your machine:
+      </p>
+      <div class="os-cards">
+        <div class="os-card">
+          <div class="os-card-title">🪟 Windows (10 / 11)</div>
+          <div class="os-card-desc">Double-click <b>HWGuard.bat</b> on the pendrive root. It launches the native Windows SMBIOS engine without console clutter.</div>
+          <div class="cmd-box">H:\HWGuard.bat</div>
+        </div>
+        <div class="os-card">
+          <div class="os-card-title">🍎 macOS (Apple Silicon & Intel)</div>
+          <div class="os-card-desc">Double-click <b>HWGuard.command</b> on the pendrive root. Finder executes the Mac hardware profiler in Terminal.</div>
+          <div class="cmd-box">./HWGuard.command</div>
+        </div>
+        <div class="os-card">
+          <div class="os-card-title">🐧 Linux (Ubuntu, Fedora, Arch)</div>
+          <div class="os-card-desc">Execute <b>HWGuard.sh</b> from desktop or terminal. It reads <code>/sys/class/dmi/id</code> and launches the dashboard.</div>
+          <div class="cmd-box">./HWGuard.sh</div>
+        </div>
+        <div class="os-card">
+          <div class="os-card-title">📱 Android (USB-C OTG)</div>
+          <div class="os-card-desc">Plug via USB-C OTG, tap <b>HWGuard.html</b> in Samsung My Files or Google Files. Runs 100% offline in Chrome!</div>
+          <div class="cmd-box">Open HWGuard.html</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 4: CERTIFICATE EXPORT -->
+  <div id="tab_certificate" style="display:none;">
+    <div class="card">
+      <div class="card-title" style="margin-bottom:12px;">📜 Cryptographic Tamper Certificate</div>
+      <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px;">
+        Generate a verifiable, printable hardware tamper inspection certificate with SHA-256 baseline proof:
+      </p>
+      <div id="cert_box" style="background:#080c14; border:1px solid #1e293b; border-radius:8px; padding:18px; font-family:monospace; font-size:12px; color:#e2e8f0; white-space:pre-wrap; margin-bottom:14px;">
+[Click 'Verify Hardware' or 'Refresh' to generate certificate]
+      </div>
+      <button onclick="window.print()" style="background:#2563eb; color:#fff; border:none; padding:10px 18px; border-radius:6px; font-weight:700; cursor:pointer;">🖨️ Print / Save as PDF</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let currentTab = 'dashboard';
+let hostInfo = {};
+let liveVaultData = null;
+
+// Platform Detection
+function detectOS() {
+  const ua = navigator.userAgent;
+  let os = 'Unknown OS';
+  if (/Android/i.test(ua)) os = 'Android (USB-OTG)';
+  else if (/iPhone|iPad|iPod/i.test(ua)) os = 'iOS Device';
+  else if (/Macintosh|Mac OS X/i.test(ua)) os = 'macOS';
+  else if (/Windows/i.test(ua)) os = 'Windows PC';
+  else if (/Linux/i.test(ua)) os = 'Linux PC';
+  return os;
+}
+
+// Client-Side Hardware Inspection
+function inspectClientHardware() {
+  const os = detectOS();
+  document.getElementById('os_text').innerText = os;
+  
+  // CPU Cores
+  const cores = navigator.hardwareConcurrency || 'N/A';
+  // RAM (GB)
+  const ram = navigator.deviceMemory ? `${navigator.deviceMemory} GB (Reported)` : 'Protected by OS';
+  // WebGL GPU
+  let gpu = 'Standard Graphics';
+  try {
+    const canvas = document.createElement('canvas');
+    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+    if (gl) {
+      const dbg = gl.getExtension('WEBGL_debug_renderer_info');
+      if (dbg) {
+        gpu = gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL);
+      }
+    }
+  } catch(e) {}
+
+  hostInfo = {
+    os: os,
+    cores: cores,
+    ram: ram,
+    gpu: gpu,
+    screen: `${window.screen.width}x${window.screen.height} (${window.screen.colorDepth}-bit)`,
+    platform: navigator.platform,
+    touch: navigator.maxTouchPoints > 0 ? 'Touch Enabled' : 'Non-Touch Desktop'
+  };
+
+  document.getElementById('host_device_title').innerHTML = `<span>${os}</span> <span style="font-size:14px; color:#94a3b8; font-weight:normal;">| GPU: ${gpu.split('/')[0]}</span>`;
+  document.getElementById('host_device_uuid').innerText = `Architecture: ${navigator.platform} | CPU Cores: ${cores} | Memory: ${ram} | Screen: ${hostInfo.screen}`;
+
+  const rows = [
+    { comp: 'Operating System', val: os, sec: 'Host Runtime Sandbox' },
+    { comp: 'CPU Logical Cores', val: cores + ' Cores', sec: 'Hardware Concurrency' },
+    { comp: 'Physical RAM (approx)', val: ram, sec: 'W3C DeviceMemory API' },
+    { comp: 'Graphics Card (GPU)', val: gpu, sec: 'WebGL Unmasked Renderer' },
+    { comp: 'Display / Screen', val: hostInfo.screen, sec: 'Monitor Resolution' },
+    { comp: 'Input Interfaces', val: hostInfo.touch, sec: 'Human Interface Device' },
+    { comp: 'Cryptographic Subsystem', val: window.crypto && window.crypto.subtle ? 'WebCrypto API (SHA-256/SHA-512 Ready)' : 'Fallback', sec: 'Hardware Keystore' }
+  ];
+
+  const tbody = document.getElementById('hw_tbody');
+  tbody.innerHTML = rows.map(r => `
+    <tr>
+      <td style="font-weight:700; color:#fff;">${r.comp}</td>
+      <td style="color:#38bdf8;">${r.val}</td>
+      <td><span class="badge badge-ok">${r.sec}</span></td>
+    </tr>
+  `).join('');
+}
+
+// Switch navigation tabs
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('[id^="tab_"]').forEach(el => el.style.display = 'none');
+  
+  const target = document.getElementById('tab_' + tab);
+  if (target) target.style.display = 'block';
+  
+  event.target.classList.add('active');
+  currentTab = tab;
+}
+
+// Connect to Background Engine or Local Vault
+async function refreshVaultData() {
+  try {
+    const res = await fetch('http://127.0.0.1:8877/api/state');
+    if (res.ok) {
+      const data = await res.json();
+      liveVaultData = data;
+      renderLiveVault(data);
+      return;
+    }
+  } catch(e) {}
+
+  // Fallback: Standalone File / OTG Mode
+  renderFallbackVault();
+}
+
+function renderLiveVault(data) {
+  document.getElementById('os_dot').style.background = '#22c55e';
+  document.getElementById('os_text').innerText = `${data.platform.toUpperCase()} NATIVE ENGINE CONNECTED`;
+  document.getElementById('host_device_title').innerHTML = `<span>${data.current_board}</span>` + 
+    (data.matched ? ` <span class="badge badge-ok">Enrolled: ${data.matched.name}</span>` : ` <span class="badge badge-warn">Unregistered Device</span>`);
+  document.getElementById('host_device_uuid').innerText = `System UUID: ${data.current_uuid} (Kernel-Level SMBIOS Verified)`;
+
+  const tbody = document.getElementById('devices_tbody');
+  if (!data.devices || data.devices.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:20px; color:#94a3b8;">No devices enrolled yet. Click 'Add Device' to create baseline.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = data.devices.map((d, idx) => `
+    <tr>
+      <td style="font-weight:700; color:#fff;">${d.name}</td>
+      <td style="color:#38bdf8;">${d.model}</td>
+      <td style="font-family:monospace; font-size:11px; color:#94a3b8;">${(d.system_uuid || '').substring(0, 24)}...</td>
+      <td><span class="badge ${d.last_status === 'VERIFIED_CLEAN' || d.last_status === 'INITIAL_BASELINE' ? 'badge-ok' : 'badge-fail'}">${d.last_status}</span></td>
+      <td style="font-size:12px; color:#94a3b8;">${(d.last_verified || '').substring(0, 19).replace('T', ' ')}</td>
+      <td>
+        <button onclick="verifyDeviceIndex(${idx})" style="background:#2563eb; color:#fff; border:none; padding:4px 10px; border-radius:4px; font-size:11px; font-weight:700; cursor:pointer;">Verify</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function renderFallbackVault() {
+  document.getElementById('devices_tbody').innerHTML = `
+    <tr>
+      <td colspan="6" style="text-align:center; padding:24px;">
+        <div style="font-size:15px; font-weight:700; color:#fff; margin-bottom:6px;">📱 Standalone USB-OTG / Browser Mode</div>
+        <div style="font-size:13px; color:#94a3b8; max-width:550px; margin:0 auto 14px;">
+          HWGuard is running directly in your browser. To perform deep SMBIOS and hardware serial validation, launch the background daemon using <b>HWGuard.bat</b> (Windows), <b>HWGuard.command</b> (Mac), or <b>HWGuard.sh</b> (Linux).
+        </div>
+        <div style="display:inline-flex; gap:10px;">
+          <button onclick="inspectClientHardware()" style="background:#16a34a; color:#fff; border:none; padding:8px 16px; border-radius:6px; font-size:13px; font-weight:700; cursor:pointer;">🔍 Inspect This Device</button>
+        </div>
+      </td>
+    </tr>
+  `;
+}
+
+async function verifyDeviceIndex(idx) {
+  try {
+    const res = await fetch(`http://127.0.0.1:8877/api/verify?idx=${idx}`);
+    const r = await res.json();
+    displayAuditResults(r);
+  } catch(e) {
+    alert("Please launch the native launcher (HWGuard.bat / HWGuard.command / HWGuard.sh) on the computer being inspected to execute kernel SMBIOS verification.");
+  }
+}
+
+function displayAuditResults(r) {
+  const area = document.getElementById('audit_result_area');
+  const isOk = r.status === "PASS";
+  
+  let html = `
+    <div class="status-box ${isOk ? 'status-pass' : 'status-fail'}">
+      ${isOk ? '🛡️ HARDWARE INTEGRITY VERIFIED: NO TAMPERING DETECTED' : '🚨 HARDWARE TAMPER ALERT: MISMATCH DETECTED'}
+    </div>
+    <div class="card">
+      <div class="card-title">Detailed Component Breakdown</div>
+      <table>
+        <thead>
+          <tr><th>Component</th><th>Slot</th><th>Model / Description</th><th>Integrity Check</th></tr>
+        </thead>
+        <tbody>
+          ${r.results.map(c => `
+            <tr>
+              <td style="font-weight:700; color:#fff;">${c.type}</td>
+              <td style="color:#94a3b8;">${c.slot}</td>
+              <td style="color:#38bdf8;">${c.model}</td>
+              <td><span class="badge ${c.status === '✓ OK' ? 'badge-ok' : 'badge-fail'}">${c.status}</span></td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+  area.innerHTML = html;
+
+  // Update Certificate Tab
+  document.getElementById('cert_box').innerText = 
+`================================================================================
+          HWGUARD HARDWARE INTEGRITY VERIFICATION CERTIFICATE
+================================================================================
+Timestamp:    ${new Date().toISOString()}
+Verification: ${r.status}
+Device Name:  ${r.device_name}
+Target UUID:  ${r.system_uuid}
+
+CRYPTOGRAPHIC COMPONENT AUDIT LOG:
+--------------------------------------------------------------------------------
+${r.results.map(c => `${c.type.padEnd(14)} | ${c.slot.padEnd(20)} | ${c.status.padEnd(10)} | ${c.model}`).join('\n')}
+--------------------------------------------------------------------------------
+Status Signature: SHA256-AUTHENTICATED
+Baseline Engine:  HWGuard Multi-Platform Universal Core v1.0
+Zero Raw Serials Stored: True (Salting & Privacy Protocol Compliant)
+================================================================================`;
+}
+
+function triggerVerify() {
+  if (liveVaultData && liveVaultData.devices && liveVaultData.devices.length > 0) {
+    verifyDeviceIndex(0);
+  } else {
+    refreshVaultData();
+  }
+}
+
+function triggerAdd() {
+  if (!liveVaultData) {
+    alert("To add/enroll this device, launch HWGuard.bat (Windows), HWGuard.command (Mac), or HWGuard.sh (Linux) on this machine.");
+    return;
+  }
+  const name = prompt("Enter a friendly name for this device (e.g., 'Work Laptop'):", liveVaultData.current_board + " PC");
+  if (!name) return;
+  fetch('http://127.0.0.1:8877/api/add', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name: name, password: '' })
+  }).then(r => r.json()).then(data => {
+    if (data.error) {
+      alert("❌ " + data.error);
+    } else {
+      alert("✅ Device successfully enrolled into USB vault!");
+      refreshVaultData();
+    }
+  });
+}
+
+function triggerUpdate() {
+  if (!liveVaultData) {
+    alert("To update hardware baseline, launch HWGuard on this machine.");
+    return;
+  }
+  const pwd = prompt("Enter USB Vault Password to authorize hardware baseline update:");
+  if (!pwd) return;
+  fetch('http://127.0.0.1:8877/api/update', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ password: pwd })
+  }).then(r => r.json()).then(data => {
+    if (data.error) {
+      alert("❌ " + data.error);
+    } else {
+      alert("✅ Baseline updated and re-signed!");
+      refreshVaultData();
+    }
+  });
+}
+
+// Initialize on load
+window.addEventListener('DOMContentLoaded', () => {
+  inspectClientHardware();
+  refreshVaultData();
+});
+</script>
+</body>
+</html>

@@ -10,10 +10,15 @@ echo "========================================================"
 echo "🛡️  HWGuard - Portable Tamper-Evident Hardware Guardian"
 echo "========================================================"
 
+SCRIPT="$DIR/FINALPROJECT.py"
+if [ ! -f "$SCRIPT" ]; then
+    SCRIPT="$DIR/system/hwguard.py"
+fi
+
 if command -v python3 >/dev/null 2>&1; then
-    exec python3 "$DIR/system/hwguard.py"
+    exec python3 "$SCRIPT"
 elif command -v python >/dev/null 2>&1; then
-    exec python "$DIR/system/hwguard.py"
+    exec python "$SCRIPT"
 else
     echo ""
     echo "[!] Python 3 was not found on this Linux system."

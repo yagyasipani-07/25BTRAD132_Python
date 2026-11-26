@@ -37,7 +37,8 @@ Comprehensive collection of Python programming coursework, lab exercises, proble
 │   └── Lab_Exercise_5.py                 # Lab 5: OOP principles (Encapsulation, Inheritance)
 │
 ├── 25BTRAD132_Problem_Solving/
-│   ├── Task1.ipynb                       # Problem Solving Task 1 (Introductory syntax)
+│   ├── Task1.py                          # Problem Solving Tasks 1-18 (.py script)
+│   ├── Task1.ipynb                       # Problem Solving Tasks 1-18 (Jupyter Notebook)
 │   ├── Bill Genrator.py                  # Retail billing generator with itemized receipts
 │   ├── Sales Data Analyzer.py            # Sales records analyzer and inventory manager
 │   └── OTP Generator.py                  # Cryptographic / pseudorandom OTP generator

@@ -1,11 +1,10 @@
 # Name: Yagya Sipani
 # USN: 25BTRAD132
 
-import random
-
 # ==============================================================================
 # Lab Exercise 5: Number guessing game.
 # ==============================================================================
+import random
 def guess_the_number(min_num=1, max_num=100):
     print(f"\n--- Game Started (Range: {min_num} to {max_num}) ---")
     secret_number = random.randint(min_num, max_num)

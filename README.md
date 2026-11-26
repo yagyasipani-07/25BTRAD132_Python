@@ -28,17 +28,14 @@ Comprehensive collection of Python programming coursework, lab exercises, proble
 │       └── README.txt                    # Project documentation & usage instructions
 │
 ├── 25BTRAD132_LAB_Exercises/
-│   ├── Lab_Exercise_1.py                 # Lab 1: Python environment setup & fundamentals (.py script)
-│   ├── Lab_excercise_1.ipynb             # Lab 1: Jupyter Notebook version
-│   ├── Lab_Exercise_2.py                 # Lab 2: Control flow, number guessing, prime & factorials (.py script)
-│   ├── Lab_Excercise_2.ipynb             # Lab 2: Jupyter Notebook version
+│   ├── Lab_Exercise_1.py                 # Lab 1: Python environment setup & fundamentals
+│   ├── Lab_Exercise_2.py                 # Lab 2: Control flow, number guessing, prime & factorials
 │   ├── Lab_exercise_3.py                 # Lab 3: Data structures & Interactive Contact Book
 │   ├── Lab_Exercise_4.py                 # Lab 4: File I/O, log analyzer & student database
 │   └── Lab_Exercise_5.py                 # Lab 5: OOP principles (Encapsulation, Inheritance)
 │
 ├── 25BTRAD132_Problem_Solving/
-│   ├── Task1.py                          # Problem Solving Tasks 1-18 (.py script)
-│   ├── Task1.ipynb                       # Problem Solving Tasks 1-18 (Jupyter Notebook)
+│   ├── Task1.py                          # Problem Solving Tasks 1-18
 │   ├── Bill Genrator.py                  # Retail billing generator with itemized receipts
 │   ├── Sales Data Analyzer.py            # Sales records analyzer and inventory manager
 │   └── OTP Generator.py                  # Cryptographic / pseudorandom OTP generator
@@ -71,8 +68,8 @@ A structured progression through core Python concepts and applied programming:
 
 | File | Topics Covered | Key Concepts |
 | :--- | :--- | :--- |
-| **`Lab_excercise_1.ipynb`** | Environment Setup & Basics | IDE configuration (VS Code, PyCharm, Jupyter), basic I/O, syntax |
-| **`Lab_Excercise_2.ipynb`** | Control Flow & Algorithms | Number guessing game, prime testing, factorial computation |
+| **`Lab_Exercise_1.py`** | Environment Setup & Basics | IDE configuration (VS Code, PyCharm, Jupyter), basic I/O, syntax |
+| **`Lab_Exercise_2.py`** | Control Flow & Algorithms | Number guessing game, prime testing, factorial computation |
 | **`Lab_exercise_3.py`** | Data Structures & Collections | Lists, tuples, sets, dictionaries, interactive CRUD **Contact Book** |
 | **`Lab_Exercise_4.py`** | File Handling & Parsing | Log file analyzer (counts `ERROR`, `WARNING`, `INFO`), student record storage |
 | **`Lab_Exercise_5.py`** | Object-Oriented Programming | Encapsulation (`Bank` account management), inheritance (`Library` & `Book` issue system) |
@@ -87,7 +84,7 @@ Practical applications and algorithmic solutions:
 - **`Bill Genrator.py`**: Interactive console-based retail checkout system calculating subtotal, 5% sales tax, and formatted billing receipts.
 - **`Sales Data Analyzer.py`**: Business inventory tracker providing input validation, inventory updates, and analytical metrics (total revenue, top-selling product).
 - **`OTP Generator.py`**: Configurable, randomized numerical One-Time Password generator.
-- **`Task1.ipynb`**: Fundamental introductory programming tasks and formatted string printing.
+- **`Task1.py`**: Fundamental introductory programming tasks and formatted string printing.
 
 ---
 

@@ -28,8 +28,10 @@ Comprehensive collection of Python programming coursework, lab exercises, proble
 │       └── README.txt                    # Project documentation & usage instructions
 │
 ├── 25BTRAD132_LAB_Exercises/
-│   ├── Lab_excercise_1.ipynb             # Lab 1: Python environment setup & fundamentals
-│   ├── Lab_Excercise_2.ipynb             # Lab 2: Control flow, number guessing, prime & factorials
+│   ├── Lab_Exercise_1.py                 # Lab 1: Python environment setup & fundamentals (.py script)
+│   ├── Lab_excercise_1.ipynb             # Lab 1: Jupyter Notebook version
+│   ├── Lab_Exercise_2.py                 # Lab 2: Control flow, number guessing, prime & factorials (.py script)
+│   ├── Lab_Excercise_2.ipynb             # Lab 2: Jupyter Notebook version
 │   ├── Lab_exercise_3.py                 # Lab 3: Data structures & Interactive Contact Book
 │   ├── Lab_Exercise_4.py                 # Lab 4: File I/O, log analyzer & student database
 │   └── Lab_Exercise_5.py                 # Lab 5: OOP principles (Encapsulation, Inheritance)
